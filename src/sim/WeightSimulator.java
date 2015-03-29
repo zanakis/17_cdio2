@@ -11,12 +11,10 @@ public class WeightSimulator{
 	private static String inline;
 	private static String instructionDisplay= "";
 	private static String secondaryDisplay= "";
-	private static String consoleInput;
 	private static int portdst = 8000;
 	private static Socket socket;
 	private static BufferedReader instream;
 	private static DataOutputStream outstream;
-	private static Scanner in;
 	private static InputThread t1;
 
 	public static void printmenu(){
@@ -33,14 +31,14 @@ public class WeightSimulator{
 		System.out.println("Brutto: " + (brutto)+ " kg"                       );
 		System.out.println("Streng modtaget: "+inline)                         ;
 		System.out.println("                                                 ");
-		System.out.println("Denne vegt simulator lytter på ordrene           ");
+		System.out.println("Denne vegt simulator lytter pï¿½ ordrene           ");
 		System.out.println("D, DW, S, T, P111, RM20, B, Q                    ");
 		System.out.println("paa kommunikationsporten.                        ");
 		System.out.println("******");
 		System.out.println("Tast T for tara (svarende til knaptryk paa vegt)");
-		System.out.println("Tast B for ny brutto (svarende til at belastningen paa vegt ændres)");
+		System.out.println("Tast B for ny brutto (svarende til at belastningen paa vegt ï¿½ndres)");
 		System.out.println("Tast Q for at afslutte program program");
-		System.out.println("Indtast (T/B/Q for knaptryk / brutto ændring / quit)");
+		System.out.println("Indtast (T/B/Q for knaptryk / brutto ï¿½ndring / quit)");
 		System.out.print  ("Tast her: ");
 	}
 
@@ -84,7 +82,7 @@ public class WeightSimulator{
 					outstream.writeBytes("S " + (brutto-tara)+ " kg "  +"\r\n");
 				}
 				else if (inline.startsWith("B")){ // denne ordre findes 
-					//ikke på en fysisk vægt
+					//ikke pï¿½ en fysisk vï¿½gt
 					try{
 						String temp= inline.substring(2,inline.length());
 						brutto = Double.parseDouble(temp);
@@ -122,7 +120,6 @@ public class WeightSimulator{
 	}
 
 	public static void main(String[] args) throws IOException{
-		in = new Scanner(System.in);
 		t1 = new InputThread("input");
 		listener = new ServerSocket(portdst);
 		System.out.println("Venter paa connection paa port " + portdst );
