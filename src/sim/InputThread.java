@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.util.*;
 
 public class InputThread extends Thread {
+	private static final int MIN_PORT_NUMBER = 1;
+	private static final int MAX_PORT_NUMBER = 20000;
 	private Thread t;
 	private String name;
 	private String input;
@@ -15,6 +17,7 @@ public class InputThread extends Thread {
 		this.name = name;
 	}
 
+//	hvis første input er en int i en custom port range
 	public int changePort() {
 		boolean isInt = true;
 		input = in.nextLine().toUpperCase().split(" ")[0];
@@ -24,7 +27,7 @@ public class InputThread extends Thread {
 				break;
 			}
 		}
-		if(isInt)
+		if(isInt && (Integer.parseInt(input)<=MAX_PORT_NUMBER) && (Integer.parseInt(input) >= MIN_PORT_NUMBER))
 			return Integer.parseInt(input);
 		return 8000;
 

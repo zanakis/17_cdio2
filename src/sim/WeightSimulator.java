@@ -9,9 +9,10 @@ public class WeightSimulator{
 	static double brutto=0;
 	static double tara=0;
 	private static String inline;
-	private static String InstructionDisplay= "";
+	private static String instructionDisplay= "";
+	private static String secondaryDisplay= "";
 	private static String consoleInput;
-	private static int portdst;
+	private static int portdst = 8000;
 	private static Socket socket;
 	private static BufferedReader instream;
 	private static DataOutputStream outstream;
@@ -23,7 +24,7 @@ public class WeightSimulator{
 			System.out.println("                                                 ");
 		System.out.println("*************************************************");
 		System.out.println("Netto: " + (brutto-tara)+ " kg"                   );
-		System.out.println("Instruktionsdisplay: " +  InstructionDisplay    );
+		System.out.println("Instruktionsdisplay: " +  instructionDisplay    );
 		System.out.println("*************************************************");
 		System.out.println("                                                 ");
 		System.out.println("                                                 ");
@@ -52,18 +53,26 @@ public class WeightSimulator{
 
 				}
 				else if(inline.startsWith("P111")) {
-
-				}
-				else if(inline.startsWith("DW")) {
-
+					if (inline.equals("P111") || inline.equals("P111 "))
+						secondaryDisplay="";
+					else {
+						if(inline.length() <= 30)
+							secondaryDisplay=(inline.substring(5, inline.length()));
+						else outstream.writeBytes("Argument too long");
+					}
+					printmenu();
+					outstream.writeBytes(secondaryDisplay + "\r\n");
 				}
 				else if (inline.startsWith("D")){
-					if (inline.equals("D"))
-						InstructionDisplay="";
-					else
-						InstructionDisplay=(inline.substring(2, inline.length()));
+					if (inline.equals("DW") || inline.equals("D") || inline.equals("D "))
+						instructionDisplay="";
+					else {
+						if(inline.length() <= 7)
+							instructionDisplay=(inline.substring(2, inline.length()));
+						else outstream.writeBytes("Argument too long");
+					}
 					printmenu();
-					outstream.writeBytes("DB"+"\r\n");
+					outstream.writeBytes("DB"+ instructionDisplay + "\r\n");
 				}
 				else if (inline.startsWith("T")){
 					outstream.writeBytes("T " + (tara) + " kg "+"\r\n");
@@ -93,8 +102,10 @@ public class WeightSimulator{
 					instream.close();
 					outstream.close();
 					socket.close();
+					t1.join(1);
 					System.exit(0);
 				}
+				else outstream.writeBytes("Illegal argument");
 			}
 		}
 		catch (Exception e){
@@ -118,8 +129,9 @@ public class WeightSimulator{
 		System.out.println("Indtast eventuel portnummer som 1. argument");
 		System.out.println("paa kommando linien for andet portnr");
 		try {
+			portdst = t1.changePort();
 			listener.close();
-			listener = new ServerSocket(t1.changePort());
+			listener = new ServerSocket(portdst);
 		} catch(Exception e) {
 			System.out.println("Exception: " + e.getMessage());
 		}
