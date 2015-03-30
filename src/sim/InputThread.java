@@ -17,7 +17,7 @@ public class InputThread extends Thread {
 		this.name = name;
 	}
 
-//	hvis første input er en int i en custom port range
+//	hvis fï¿½rste input er en int i en custom port range returnerer den den int
 	public int changePort() {
 		boolean isInt = true;
 		input = in.nextLine().toUpperCase().split(" ")[0];
@@ -30,11 +30,9 @@ public class InputThread extends Thread {
 		if(isInt && (Integer.parseInt(input)<=MAX_PORT_NUMBER) && (Integer.parseInt(input) >= MIN_PORT_NUMBER))
 			return Integer.parseInt(input);
 		return 8000;
-
 	}
 
 	public void run() {
-		changePort();
 		while(true) {
 			if(input.startsWith("T")) {
 				System.out.println("T " + (WeightSimulator.tara) + " kg "+"\r\n");

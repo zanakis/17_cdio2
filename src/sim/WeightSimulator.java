@@ -42,80 +42,66 @@ public class WeightSimulator{
 		System.out.print  ("Tast her: ");
 	}
 
-	public static void takeInput() throws IOException {
-		try{
-			while (true){
-				inline = instream.readLine().toUpperCase();
-				if (inline.startsWith("RM20")){
-					// ikke implimenteret
-
-				}
-				else if(inline.startsWith("P111")) {
-					if (inline.equals("P111") || inline.equals("P111 "))
-						secondaryDisplay="";
-					else {
-						if(inline.length() <= 30)
-							secondaryDisplay=(inline.substring(5, inline.length()));
-						else outstream.writeBytes("Argument too long");
-					}
-					printmenu();
-					outstream.writeBytes(secondaryDisplay + "\r\n");
-				}
-				else if (inline.startsWith("D")){
-					if (inline.equals("DW") || inline.equals("D") || inline.equals("D "))
-						instructionDisplay="";
-					else {
-						if(inline.length() <= 7)
-							instructionDisplay=(inline.substring(2, inline.length()));
-						else outstream.writeBytes("Argument too long");
-					}
-					printmenu();
-					outstream.writeBytes("DB"+ instructionDisplay + "\r\n");
-				}
-				else if (inline.startsWith("T")){
-					outstream.writeBytes("T " + (tara) + " kg "+"\r\n");
-					tara=brutto;
-					printmenu();
-				}
-				else if (inline.startsWith("S")){
-					printmenu();
-					outstream.writeBytes("S " + (brutto-tara)+ " kg "  +"\r\n");
-				}
-				else if (inline.startsWith("B")){ // denne ordre findes 
-					//ikke p� en fysisk v�gt
-					try{
-						String temp= inline.substring(2,inline.length());
-						brutto = Double.parseDouble(temp);
-						printmenu();
-						outstream.writeBytes("DB"+"\r\n");
-					} catch(Exception e) {
-						outstream.writeBytes("Illegal numer format"+"\r\n");
-					}
-				}
-				else if ((inline.startsWith("Q"))){
-					System.out.println("");
-					System.out.println("Program stoppet Q modtaget paa com   port");
-					System.in.close();
-					System.out.close();
-					instream.close();
-					outstream.close();
-					socket.close();
-					t1.join(1);
-					System.exit(0);
-				}
-				else outstream.writeBytes("Illegal argument");
+	public static String takeInput(String input) throws Exception {
+		while (true){
+			if (input.startsWith("RM20 8")){
+				String[] str = input.split(" ");
+				if(!(str.length == 5))
+					return "RM 20 L";
+				return takeInput(str[2]) + takeInput(str[3]) + takeInput(str[4]);
 			}
-		}
-		catch (Exception e){
-			System.out.println("Exception: "+e.getMessage());
-
-		} finally {					//ved at lukke ressourcer i finally vil de lukkes uanset om der var en exception eller ej						
-			System.in.close();
-			System.out.close();
-			instream.close();
-			outstream.close();
-			socket.close();
-			System.exit(0);
+			else if(input.startsWith("P111")) {
+				if (input.equals("P111") || input.equals("P111 ")) {
+					secondaryDisplay="";
+				}
+				else {
+					if(input.length() <= 30) {
+						secondaryDisplay=(input.substring(5, input.length()));
+					}
+					else return "Illegal argument: argument too long";
+				}
+				return secondaryDisplay + "\r\n";
+			}
+			else if (input.startsWith("D")){
+				if (input.equals("DW") || input.equals("D") || input.equals("D "))
+					instructionDisplay="";
+				else {
+					if(inline.length() <= 7)
+						instructionDisplay=(input.substring(2, input.length()));
+					else return "Argument too long";
+				}
+				return "DB"+ instructionDisplay + "\r\n";
+			}
+			else if (input.startsWith("T")){
+				double x = tara;
+				tara=brutto;
+				return "T " + (x) + " kg "+"\r\n";
+			}
+			else if (input.startsWith("S")){
+				return "S " + (brutto-tara)+ " kg "  +"\r\n";
+			}
+			else if (input.startsWith("B")){ // denne ordre findes 
+				//ikke p� en fysisk v�gt
+				try{
+					String temp= inline.substring(2,inline.length());
+					brutto = Double.parseDouble(temp);
+					return "DB"+"\r\n";
+				} catch(Exception e) {
+					return "Illegal numer format"+"\r\n";
+				}
+			}
+			else if ((input.startsWith("Q"))){
+				System.out.println("");
+				System.out.println("Program stoppet Q modtaget paa com   port");
+				System.in.close();
+				System.out.close();
+				instream.close();
+				outstream.close();
+				socket.close();
+				t1.join(1);
+				System.exit(0);
+			}
+			else return "Illegal argument";
 		}
 	}
 
@@ -137,6 +123,23 @@ public class WeightSimulator{
 		instream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		outstream = new DataOutputStream(socket.getOutputStream());
 		printmenu();
-		takeInput();
+		try{
+			while (true){
+				printmenu();
+				inline = instream.readLine().toUpperCase();
+				outstream.writeBytes(takeInput(inline));
+			}
+		}
+		catch (Exception e){
+			System.out.println("Exception: "+e.getMessage());
+
+		} finally {					//ved at lukke ressourcer i finally vil de lukkes uanset om der var en exception eller ej						
+			System.in.close();
+			System.out.close();
+			instream.close();
+			outstream.close();
+			socket.close();
+			System.exit(0);
+		}
 	}
 }
