@@ -42,14 +42,19 @@ public class WeightSimulator{
 		System.out.print  ("Tast her: ");
 	}
 
+//	programmet blev splittet op så de mulige kommandoer står alene,
+//	da RM20 kommandoen kræver adgan til alle muligheder
 	public static String takeInput(String input) throws Exception {
 		while (true){
 			if (input.startsWith("RM20 8")){
 				String[] str = input.split(" ");
-				if(!(str.length == 4))
+//				da RM20 8 kommandoen skal have 3 strenge som input checker programmet antallet af strenge
+//				checker om nogle af inputs ikke er gyldige
+				if(!(str.length == 4) || takeInput(str[2] + " " + str[3]).startsWith("Illegal") ||
+						takeInput("D " + str[4]).startsWith("Illegal"))
 					return "RM 20 L";
 				outstream.writeBytes("RM20 B");
-				return takeInput(str[2]) + takeInput(str[3]) + takeInput(str[4]);
+				return "RM20 " + takeInput(str[2]) + " " + takeInput(str[3]) + " " + str[4];
 			}
 			else if(input.startsWith("P111")) {
 				if (input.equals("P111") || input.equals("P111 ")) {
@@ -64,6 +69,7 @@ public class WeightSimulator{
 				return secondaryDisplay + "\r\n";
 			}
 			else if (input.startsWith("D")){
+//				tilføjet DW og "D " til kommandoer, som resetter displayet
 				if (input.equals("DW") || input.equals("D") || input.equals("D "))
 					instructionDisplay="";
 				else {
@@ -134,7 +140,7 @@ public class WeightSimulator{
 		catch (Exception e){
 			System.out.println("Exception: "+e.getMessage());
 
-		} finally {					//ved at lukke ressourcer i finally vil de lukkes uanset om der var en exception eller ej						
+		} finally {		//ved at lukke ressourcer i finally vil de lukkes uanset om der var en exception eller ej						
 			System.in.close();
 			System.out.close();
 			instream.close();

@@ -32,6 +32,7 @@ public class InputThread extends Thread {
 		return 8000;
 	}
 
+//	lytter til konsollen i simulatoren, så den kan modtage de definerede kommandoer
 	public void run() {
 		while(true) {
 			if(input.startsWith("T")) {
