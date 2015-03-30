@@ -46,8 +46,9 @@ public class WeightSimulator{
 		while (true){
 			if (input.startsWith("RM20 8")){
 				String[] str = input.split(" ");
-				if(!(str.length == 5))
+				if(!(str.length == 4))
 					return "RM 20 L";
+				outstream.writeBytes("RM20 B");
 				return takeInput(str[2]) + takeInput(str[3]) + takeInput(str[4]);
 			}
 			else if(input.startsWith("P111")) {
