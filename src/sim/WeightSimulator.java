@@ -97,7 +97,7 @@ public class WeightSimulator{
 					return "Illegal numer format"+"\r\n";
 				}
 			}
-			else if ((input.startsWith("Q"))){
+			else if ((input.equals("Q"))){
 				System.out.println("");
 				System.out.println("Program stoppet Q modtaget paa com   port");
 				System.in.close();
